@@ -1,9 +1,22 @@
 import jwt from 'jsonwebtoken';
 
 import User from '../models/User';
+import authConfig from '../../config/auth';
+import * as Yup from "yup";
 
 class SessionController {
   async store(req, res) {
+    const shema = Yup.object().shape({
+      email: Yup.string()
+        .email()
+        .required(),
+      password: Yup.string().required(),
+    });
+
+    if (!(await shema.isValid(req.body))){
+      return res.status(400).json({ error: 'Validade fails'});
+    }
+    
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
 
@@ -24,8 +37,8 @@ class SessionController {
           name,
           email,
         },
-        token: jwt.sign({ id }, '98c2999a7f00a3017a64829ac475986c', {
-          expiresIn: '7d',
+        token: jwt.sign({ id }, authConfig.secret, {
+          expiresIn: authConfig.expiresIn,
         }),
       },
     );
