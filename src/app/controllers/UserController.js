@@ -54,7 +54,7 @@ class UserController {
       return res.status(400).json({ error: 'Validade fails'});
     }
 
-    const { email, oldPassword = 'nao', password } = req.body;
+    const { email, oldPassword, password } = req.body;
 
     const user = await User.findByPk(req.userId);
 
