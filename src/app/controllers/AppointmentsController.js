@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import {
-  startOfHour, parseISO, isBefore, format, subHours
+  startOfHour, parseISO, isBefore, format, subHours,
 }
   from 'date-fns';
 import pt from 'date-fns/locale/pt';
@@ -134,7 +134,7 @@ class AppointmentsController {
       ],
     });
 
-    if (!appointment){
+    if (!appointment) {
       return res.status(401).json({
         error: "Don't have appoiment in database.",
       });
@@ -147,9 +147,9 @@ class AppointmentsController {
 
     const dateWithSub = subHours(appointment.date, 2);
 
-    if (isBefore(dateWithSub, new Date())){
+    if (isBefore(dateWithSub, new Date())) {
       return res.status(401).json({
-        erros: 'You can only cancel appoiments 2 hours in advance.'
+        erros: 'You can only cancel appoiments 2 hours in advance.',
       });
     }
 
@@ -157,7 +157,7 @@ class AppointmentsController {
 
     await appointment.save();
 
-    await Queue.add(CancellationMail.key,{
+    await Queue.add(CancellationMail.key, {
       appointment,
     });
 
